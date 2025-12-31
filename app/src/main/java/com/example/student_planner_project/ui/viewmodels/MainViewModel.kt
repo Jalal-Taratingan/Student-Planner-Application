@@ -1,15 +1,22 @@
-// MESSENGER OF THE REPOSITORY AND UI
+// STARTING POINT TO LOAD DATA AFTER OPENING THE APP
+
 package com.example.student_planner_project.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.student_planner_project.data.local.LocalStorageManager
 import com.example.student_planner_project.data.models.Semester
-import com.example.student_planner_project.data.repository.PlannerRepository
+import com.example.student_planner_project.data.repository.LocalPlannerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository : PlannerRepository) : ViewModel() {
+// Constructor
+class MainViewModel(application : Application) : AndroidViewModel(application) {
+    private val localStorage = LocalStorageManager(application)
+    private val repository = LocalPlannerRepository(localStorage)
+
     private val _updatedSemester = MutableStateFlow<Semester?>(null)
     val semester : StateFlow<Semester?> = _updatedSemester
 

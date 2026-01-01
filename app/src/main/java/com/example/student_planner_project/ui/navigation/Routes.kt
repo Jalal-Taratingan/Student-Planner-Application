@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.student_planner_project.ui.screens.HomeScreen
 import com.example.student_planner_project.ui.screens.SetupScreen
 import com.example.student_planner_project.ui.viewmodels.MainViewModel
 
@@ -31,7 +32,7 @@ fun Routes(navController: NavHostController, mainViewModel: MainViewModel, modif
         }
 
         composable(Screen.Home.route) {
-            Text("Home")
+            HomeScreen(mainViewModel)
         }
 
         composable(Screen.Events.route) {

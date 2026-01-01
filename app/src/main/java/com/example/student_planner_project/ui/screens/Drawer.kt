@@ -54,7 +54,7 @@ fun Drawer(mainViewModel: MainViewModel){
 
                 // Navigation Items
                 NavigationDrawerItem(
-                    label = { Text("Dashboard") },
+                    label = { Text("Home") },
 //                    selected = currentScreen == "home",
                     selected = false,
                     onClick = {
@@ -87,12 +87,12 @@ fun Drawer(mainViewModel: MainViewModel){
                 }
             )
         }
-    ) { paddingValues ->
-        Routes(
-            navController = navController,
-            mainViewModel = mainViewModel,
-            modifier = Modifier.padding(paddingValues)
-        )
-    }
+        ) { paddingValues ->
+            Routes(
+                navController = navController,
+                mainViewModel = mainViewModel,
+                modifier = Modifier.padding(paddingValues)
+            )
+        }
     }
 }

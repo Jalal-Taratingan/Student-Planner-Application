@@ -1,4 +1,4 @@
-// THE USER INTERFACE FOR THE SETUP SCREEN
+// THE USER INTERFACE FOR SETUP SCREEN
 
 @file:OptIn(ExperimentalMaterial3Api::class)
 
@@ -100,7 +100,9 @@ fun SetupScreen(mainViewModel: MainViewModel){
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {mainViewModel.saveNewSemester(semesterName.value, startTimestamp.longValue, endTimestamp.longValue)},
+        Button(onClick = {
+            mainViewModel.saveNewSemester(semesterName.value, startTimestamp.longValue, endTimestamp.longValue)
+            mainViewModel.finishSetup()},
             enabled = semesterName.value.isNotEmpty() && startDate.value != "Select Start Date" && endDate.value != "Select End Date") {
             Text("Save")
         }

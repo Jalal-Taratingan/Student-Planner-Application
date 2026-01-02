@@ -1,4 +1,4 @@
-// THE USER INTERFACE OF THE HOME SCREEN
+// THE USER INTERFACE OF HOME SCREEN
 
 package com.example.student_planner_project.ui.screens
 
@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.student_planner_project.ui.viewmodels.MainViewModel
 
@@ -33,10 +34,9 @@ fun HomeScreen(mainViewModel : MainViewModel){
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
         // Header
-        Text(text = "Dashboard", style = MaterialTheme.typography.headlineLarge)
-        Text(text = "Semester: ${semester?.name ?: "None"}")
+        Text(text = "Home", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(25.dp))
 
         // First Row
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -56,7 +56,7 @@ fun HomeScreen(mainViewModel : MainViewModel){
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        QuoteBox("Don't stop hanggang hindi ka pa masarap.")
+        QuoteBox("itlog itlog itlog itlog")
     }
 }
 

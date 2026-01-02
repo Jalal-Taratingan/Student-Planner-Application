@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.student_planner_project.ui.screens.Drawer
 import com.example.student_planner_project.ui.screens.SetupScreen
+import com.example.student_planner_project.ui.screens.Tabs
 import com.example.student_planner_project.ui.theme.StudentPlannerProjectTheme
 import com.example.student_planner_project.ui.viewmodels.MainViewModel
 
@@ -18,12 +18,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             StudentPlannerProjectTheme {
                 val viewModel : MainViewModel = viewModel()
-                val semester = viewModel.semester.collectAsState()
+                val isFirstTime = viewModel.isFirstTime.collectAsState()
 
-                if (semester.value == null) {
+                if (isFirstTime.value) {
                     SetupScreen(viewModel)
                 } else {
-                    Drawer(viewModel)
+                    Tabs(viewModel)
                 }
             }
         }

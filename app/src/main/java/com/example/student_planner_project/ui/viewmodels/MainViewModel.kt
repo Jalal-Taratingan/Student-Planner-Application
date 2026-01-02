@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
 class MainViewModel(application : Application) : AndroidViewModel(application) {
     private val localStorage = LocalStorageManager(application)
     private val repository = LocalPlannerRepository(localStorage)
-
     private val _updatedSemester = MutableStateFlow<Semester?>(null)
     val semester : StateFlow<Semester?> = _updatedSemester
+    val isFirstTime = MutableStateFlow(true)
 
     init {
         loadData()
@@ -27,6 +27,10 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
     private fun loadData() {
         viewModelScope.launch {
             _updatedSemester.value = repository.getCurrentSemester()
+
+            if (_updatedSemester.value  != null){
+                isFirstTime.value = false
+            }
         }
     }
 
@@ -34,6 +38,10 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
         val newSemester = Semester(name = name, startDate = startDate, endDate = endDate)
         repository.saveSemester(newSemester)
         loadData()
+    }
+
+    fun finishSetup(){
+        isFirstTime.value = false
     }
 }
 

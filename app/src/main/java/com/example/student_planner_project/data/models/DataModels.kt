@@ -19,7 +19,7 @@ data class Subject(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val schedule: String,
-    val professor: String? = null,
+    val professor: String,
     val colorHex: String = "#F0F0F0",
     val tasks: List<Task> = emptyList()
 )

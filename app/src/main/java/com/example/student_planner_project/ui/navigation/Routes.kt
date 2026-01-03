@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.student_planner_project.ui.screens.HomeScreen
 import com.example.student_planner_project.ui.screens.SetupScreen
+import com.example.student_planner_project.ui.screens.SubjectScreen
 import com.example.student_planner_project.ui.screens.TaskScreen
 import com.example.student_planner_project.ui.viewmodels.MainViewModel
 
@@ -31,7 +32,7 @@ fun Routes(navController: NavHostController, mainViewModel: MainViewModel, modif
         }
 
         composable(Screen.Subjects.route){
-            Text("Subjects")
+            SubjectScreen(mainViewModel)
         }
 
         composable(Screen.Notepad.route) {

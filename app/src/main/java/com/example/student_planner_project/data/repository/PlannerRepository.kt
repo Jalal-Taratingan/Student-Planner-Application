@@ -7,7 +7,8 @@ import com.example.student_planner_project.data.models.Subject
 import com.example.student_planner_project.data.models.Task
 
 interface PlannerRepository {
+    fun saveNewSemester (semester: Semester)
+    fun addNewSubject (subject: Subject)
     fun getCurrentSemester(): Semester?
-    fun saveSemester (semester: Semester)
-    fun addTaskToSubject (subjectID: Subject, task: Task)
+//    fun addTaskToSubject (subjectID: Subject, task: Task)
 }

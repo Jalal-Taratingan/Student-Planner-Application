@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -69,7 +68,7 @@ fun SubjectScreen(mainViewModel: MainViewModel){
 
                 // Add a subject
                 } else if (pressedAdd.value == true) {
-                    NewSubject(mainViewModel, pressedAdd){
+                    AddSubject(mainViewModel, pressedAdd){
                         pressedAdd.value = false
                     }
 
@@ -123,7 +122,7 @@ fun SubjectScreen(mainViewModel: MainViewModel){
 
 // Adds a subject
 @Composable
-fun NewSubject(mainViewModel: MainViewModel, pressedAdd: MutableState<Boolean>, pressedBack: () -> Unit){
+fun AddSubject(mainViewModel: MainViewModel, pressedAdd: MutableState<Boolean>, pressedBack: () -> Unit){
     val subjectName = remember { mutableStateOf("") }
     val subjectProfessor = remember { mutableStateOf("")}
     val subjectSchedule = remember { mutableStateOf("")}

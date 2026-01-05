@@ -10,5 +10,5 @@ interface PlannerRepository {
     fun saveNewSemester (semester: Semester)
     fun addNewSubject (subject: Subject)
     fun getCurrentSemester(): Semester?
-//    fun addTaskToSubject (subjectID: Subject, task: Task)
+    fun addNewTask(task: Task)
 }

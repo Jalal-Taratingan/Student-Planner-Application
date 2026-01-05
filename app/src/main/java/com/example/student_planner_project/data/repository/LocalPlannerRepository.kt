@@ -21,18 +21,7 @@ class LocalPlannerRepository( private val localStorage: LocalStorageManager) : P
         return localStorage.getSemester()
     }
 
-//    override fun addTaskToSubject (subjectID: Subject, task: Task){
-//        val currentSemester = localStorage.getSemester() ?: return
-//
-//        val updatedSubjects = currentSemester.subjects.map { subject ->
-//            if (subject == subjectID){
-//                subject.copy(tasks = subject.tasks + task)
-//            } else {
-//                subject
-//            }
-//        }
-//
-//        val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
-//        localStorage.saveSemester(updatedSemester)
-//    }
+    override fun addNewTask(task: Task){
+        localStorage.addTask(task)
+    }
 }

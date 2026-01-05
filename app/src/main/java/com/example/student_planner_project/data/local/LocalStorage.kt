@@ -5,6 +5,7 @@ package com.example.student_planner_project.data.local
 import android.content.Context
 import com.example.student_planner_project.data.models.Semester
 import com.example.student_planner_project.data.models.Subject
+import com.example.student_planner_project.data.models.Task
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -36,22 +37,20 @@ class LocalStorageManager(context: Context) {
         saveSemester(updatedSemester)
     }
 
-//    fun addSubject(subject: Subject){
-//        val currentSubjects = getSubjects().toMutableList()
-//        currentSubjects.add(subject)
-//
-//        val jsonString = json.encodeToString(currentSubjects)
-//        sharedPreferences.edit().putString("saved_subject", jsonString).apply()
-//    }
-//
-//    fun getSubjects(): List<Subject>{
-//        val jsonString = sharedPreferences.getString("saved_subject", null)
-//        return if (jsonString != null) {
-//            json.decodeFromString<List<Subject>>(jsonString)
-//        } else {
-//            emptyList()
-//        }
-//    }
+    // Add a task
+    fun addTask(task: Task){
+        val currentSemester = getSemester() ?: return
+        val updatedSubjects = currentSemester.subjects.map{ subject ->
+            if(subject.id == task.subject.id){
+                val updatedTasks = subject.tasks + task
+                subject.copy(tasks = updatedTasks)
+            }else{
+                subject
+            }
+        }
+        val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
+        saveSemester(updatedSemester)
+    }
 
     fun clearData() {
         sharedPreferences.edit().clear().apply()

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.student_planner_project.data.local.LocalStorageManager
 import com.example.student_planner_project.data.models.Semester
 import com.example.student_planner_project.data.models.Subject
+import com.example.student_planner_project.data.models.Task
 import com.example.student_planner_project.data.repository.LocalPlannerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,9 +52,33 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
         loadData()
     }
 
+    // Delete a subject
     fun deleteSubject(subject:Subject){
         val currentSemester = semester.value ?: return
         val updatedSubjects = currentSemester.subjects.filter { it != subject }
+        val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
+        repository.saveNewSemester(updatedSemester)
+        loadData()
+    }
+
+    // Add a subject
+    fun addTask(subject: Subject, taskName: String, dueDate: Long, notes: String){
+        val newTask = Task(subject = subject, title = taskName, dueDate = dueDate, note = notes)
+        repository.addNewTask(newTask)
+        loadData()
+    }
+
+    // Delete a task
+    fun deleteTask(task: Task){
+        val currentSemester = semester.value ?: return
+        val updatedSubjects = currentSemester.subjects.map {subject ->
+            if(subject.id == task.subject.id){
+                val updatedTasks = subject.tasks.filter { it != task }
+                subject.copy(tasks = updatedTasks )
+            }else{
+                subject
+            }
+        }
         val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
         repository.saveNewSemester(updatedSemester)
         loadData()

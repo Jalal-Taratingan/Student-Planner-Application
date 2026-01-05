@@ -59,56 +59,54 @@ fun SubjectScreen(mainViewModel: MainViewModel){
         }
     ){ paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)){
-            Box(modifier = Modifier.weight(1f)) {
-                // Display the details of the selected subject
-                if(subject != null){
-                    DisplayDetails(subject){
-                        selectedSubject.value = null
-                    }
+            // Display the details of the selected subject
+            if(subject != null){
+                DisplayDetails(subject){
+                    selectedSubject.value = null
+                }
 
-                // Add a subject
-                } else if (pressedAdd.value == true) {
-                    AddSubject(mainViewModel, pressedAdd){
-                        pressedAdd.value = false
-                    }
+            // Add a subject
+            } else if (pressedAdd.value == true) {
+                AddSubject(mainViewModel, pressedAdd){
+                    pressedAdd.value = false
+                }
 
-                } else {
-                    Column {
+            } else {
+                Column {
+                    Text(
+                        text = "Subjects",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+                    )
+
+                    // No semester
+                    if (currentSemester == null) {
                         Text(
-                            text = "Subjects",
-                            style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+                            text = "Create a semester to add subjects.",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
 
-                        // No semester
-                        if (currentSemester == null) {
-                            Text(
-                                text = "Create a semester to add subjects.",
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
+                        // No existing subjects
+                    } else if (currentSemester.subjects.isEmpty()) {
+                        Text(
+                            text = "No existing subjects.",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
 
-                            // No existing subjects
-                        } else if (currentSemester.subjects.isEmpty()) {
-                            Text(
-                                text = "No existing subjects.",
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-
-                            // Has semester and subjects
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                items(currentSemester.subjects) { subject ->
-                                    DisplaySubject(
-                                        mainViewModel,
-                                        subject,
-                                        pressed = { clickedSubject ->
-                                            selectedSubject.value = clickedSubject
-                                        })
-                                }
+                        // Has semester and subjects
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            items(currentSemester.subjects) { subject ->
+                                DisplaySubject(
+                                    mainViewModel,
+                                    subject,
+                                    pressed = { pressedSubject ->
+                                        selectedSubject.value = pressedSubject
+                                    })
                             }
                         }
                     }

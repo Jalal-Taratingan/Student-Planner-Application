@@ -27,6 +27,7 @@ data class Subject(
 @Serializable
 data class Task(
     val id: String = UUID.randomUUID().toString(),
+    val subject: Subject,
     val title: String,
     val dueDate: Long,
     val note: String = "",

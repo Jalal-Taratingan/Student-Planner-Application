@@ -63,7 +63,7 @@ fun Tabs(mainViewModel: MainViewModel){
                 NavigationBarItem(
                     label = { Text("Notes")},
                     selected = false,
-                    onClick = {navController.navigate(Screen.Notepad.route)},
+                    onClick = {navController.navigate(Screen.Notes.route)},
                     icon = {Icon(painter = painterResource(id = R.drawable.notes), contentDescription = null, modifier = Modifier.size(24.dp))}
                 )
             }

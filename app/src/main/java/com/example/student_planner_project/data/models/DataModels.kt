@@ -21,7 +21,8 @@ data class Subject(
     val schedule: String,
     val professor: String,
     val colorHex: String = "#F0F0F0",
-    val tasks: List<Task> = emptyList()
+    val tasks: List<Task> = emptyList(),
+    val notes: List<Notes> = emptyList()
 )
 
 @Serializable
@@ -33,4 +34,12 @@ data class Task(
     val note: String = "",
     val isCompleted: Boolean = false,
     val isMissed: Boolean = false                           // Logic for "Missed Task" notifications
+)
+
+@Serializable
+data class Notes(
+    val id: String = UUID.randomUUID().toString(),
+    val subject: Subject,
+    val title: String,
+    val notes: String
 )

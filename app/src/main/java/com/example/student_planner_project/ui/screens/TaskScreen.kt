@@ -81,7 +81,7 @@ fun TaskScreen(mainViewModel : MainViewModel) {
 
             // Displays the details of the selected task.
             } else if (task != null) {
-                DisplayDetails(mainViewModel,task) {
+                DisplayTaskDetails(mainViewModel,task) {
                     selectedTask.value = null
                 }
             } else {
@@ -336,7 +336,7 @@ fun DisplayTask(mainViewModel: MainViewModel, task: Task, pressed: (Task) -> Uni
 
 // Displays the details of the selected task
 @Composable
-fun DisplayDetails(mainViewModel: MainViewModel, task: Task, pressedBack: () -> Unit){
+fun DisplayTaskDetails(mainViewModel: MainViewModel, task: Task, pressedBack: () -> Unit){
     val scrollState = rememberScrollState()
 
     Column(){

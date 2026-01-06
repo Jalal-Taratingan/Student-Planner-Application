@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,7 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.student_planner_project.data.models.Notes
 import com.example.student_planner_project.data.models.Subject
+import com.example.student_planner_project.data.models.Task
 import com.example.student_planner_project.ui.viewmodels.MainViewModel
 
 @Composable
@@ -61,7 +65,7 @@ fun SubjectScreen(mainViewModel: MainViewModel){
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)){
             // Display the details of the selected subject
             if(subject != null){
-                DisplayDetails(subject){
+                DisplaySubjectDetails(mainViewModel, subject){
                     selectedSubject.value = null
                 }
 
@@ -195,7 +199,7 @@ fun DisplaySubject(mainViewModel: MainViewModel, subject: Subject, pressed: (Sub
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = subject.name,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(text = subject.professor, style = MaterialTheme.typography.bodyMedium)
@@ -217,56 +221,154 @@ fun DisplaySubject(mainViewModel: MainViewModel, subject: Subject, pressed: (Sub
 
 // Displays the details of the selected subject
 @Composable
-fun DisplayDetails(subject: Subject, pressedBack: () -> Unit){
+fun DisplaySubjectDetails(mainViewModel: MainViewModel, selectedSubject: Subject, pressedBack: () -> Unit){
+    val semesterState = mainViewModel.semester.collectAsState()
+    val currentSubject = semesterState.value?.subjects?.find { it.id == selectedSubject.id } ?: selectedSubject
+    val selectedTask = remember {mutableStateOf<Task?>(null)}
+    val selectedNote = remember {mutableStateOf<Notes?>(null)}
+    val notes = selectedNote.value
+    val task = selectedTask.value
     val selectedTab = remember {mutableStateOf(0)}
     val tabs = listOf("Tasks", "Notes")
 
-    Column(){
-        Box(modifier = Modifier.fillMaxWidth()) {
-            IconButton(
-                onClick = { pressedBack() }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIos,
-                    contentDescription = "Back",
+    // Displays the details of the selected task.
+    if(task != null) {
+        DisplayTaskDetails(mainViewModel, task) {
+            selectedTask.value = null
+        }
+
+    // Displays the details of the selected note.
+    }else if(notes != null){
+        DisplayNotesDetails(mainViewModel, notes) {
+            selectedNote.value = null
+        }
+
+    // Displays both task and notes.
+    }else {
+        Column() {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = { pressedBack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIos,
+                        contentDescription = "Back",
+                    )
+                }
+
+                Text(
+                    text = "Subjects",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Center)
                 )
+
             }
 
-            Text(
-                text = "Subjects",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center)
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+                thickness = 1.dp
             )
 
-        }
+            Text(
+                text = currentSubject.name,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(text = currentSubject.professor, style = MaterialTheme.typography.bodyMedium)
+            Text(text = currentSubject.schedule, style = MaterialTheme.typography.bodyMedium)
 
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 8.dp),
-            color = MaterialTheme.colorScheme.outlineVariant,
-            thickness = 1.dp
-        )
+            TabRow(
+                selectedTabIndex = selectedTab.value,
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTab.value == index,
+                        text = { Text(text = title) },
+                        onClick = { selectedTab.value = index }
+                    )
+                }
+            }
 
-        Text(text = subject.name, style = MaterialTheme.typography.headlineLarge,fontWeight = FontWeight.SemiBold, modifier = Modifier.fillMaxWidth())
-        Text(text = subject.professor, style = MaterialTheme.typography.bodyMedium)
-        Text(text = subject.schedule, style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(10.dp))
 
-        TabRow(
-            selectedTabIndex = selectedTab.value,
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTab.value == index,
-                    text = {Text(text = title)},
-                    onClick = {selectedTab.value = index}
-                )
+            Box(modifier = Modifier.weight(1f)) {
+                // Displays the tasks when task tab is pressed.
+                if (selectedTab.value == 0) {
+                    val tasks = currentSubject.tasks
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(tasks) { task ->
+                            DisplayTask(task, pressed = { pressedTask ->
+                                selectedTask.value = pressedTask
+                            })
+                        }
+                    }
+
+                // Displays the notes when notes tab is pressed.
+                } else {
+                    val notes = currentSubject.notes
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(notes) { note ->
+                            DisplayNotes(note, pressed = { pressedNote ->
+                                selectedNote.value = pressedNote
+                            })
+                        }
+                    }
+                }
             }
         }
+    }
+}
 
-        Box(){
-            if(selectedTab.value == 0){
-                Text(text = "Tasks")
-            }else{
-                Text(text = "Notes")
+// Display the task of the selected subject
+@Composable
+fun DisplayTask(task: Task, pressed: (Task) -> Unit){
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable{pressed(task)}
+    ){
+        Row(
+            modifier = Modifier.padding(10.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = task.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = "Subject: " + task.subject.name, style = MaterialTheme.typography.bodyMedium)
+                Text(text = "Due Date: " + LongToString(task.dueDate), style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+// Display the notes of the selected subject
+@Composable
+fun DisplayNotes(notes: Notes, pressed: (Notes) -> Unit){
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable {pressed(notes)}
+    ){
+        Row(
+            modifier = Modifier.padding(10.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = notes.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = "Subject: " + notes.subject.name, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

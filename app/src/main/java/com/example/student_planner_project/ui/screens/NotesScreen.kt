@@ -74,7 +74,7 @@ fun NotesScreen(mainViewModel: MainViewModel){
 
             // Displays the details of the selected notes.
             }else if(note != null){
-                DisplayDetails(mainViewModel, note){
+                DisplayNotesDetails(mainViewModel, note){
                     selectedNote.value = null
                 }
 
@@ -272,7 +272,7 @@ fun DisplayNotes(mainViewModel: MainViewModel, notes: Notes, pressed: (Notes) ->
 
 // Displays the details of the selected notes
 @Composable
-fun DisplayDetails(mainViewModel: MainViewModel, notes: Notes, pressedBack: () -> Unit){
+fun DisplayNotesDetails(mainViewModel: MainViewModel, notes: Notes, pressedBack: () -> Unit){
     val isEditing = remember {mutableStateOf(false)}
     val currentNotes = remember {mutableStateOf(notes.notes)}
     val scrollState = rememberScrollState()

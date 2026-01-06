@@ -6,6 +6,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.student_planner_project.data.local.LocalStorageManager
+import com.example.student_planner_project.data.models.Notes
 import com.example.student_planner_project.data.models.Semester
 import com.example.student_planner_project.data.models.Subject
 import com.example.student_planner_project.data.models.Task
@@ -79,6 +80,53 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
                 subject
             }
         }
+        val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
+        repository.saveNewSemester(updatedSemester)
+        loadData()
+    }
+
+    // Add a note
+    fun addNotes(subject: Subject, notesName: String, notes: String){
+        val newNotes = Notes(subject = subject, title = notesName, notes = notes)
+        repository.addNewNotes(newNotes)
+        loadData()
+    }
+
+    // Delete a note
+    fun deleteNotes(notes: Notes){
+        val currentSemester = semester.value ?: return
+        val updatedSubjects = currentSemester.subjects.map {subject ->
+            if(subject.id == notes.subject.id){
+                val updatedNotes = subject.notes.filter { it != notes}
+                subject.copy(notes = updatedNotes )
+            }else{
+                subject
+            }
+        }
+        val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
+        repository.saveNewSemester(updatedSemester)
+        loadData()
+    }
+
+    // Edit a note
+    fun editNotes(newNote: Notes){
+        val currentSemester = semester.value ?: return
+        val updatedSubjects = currentSemester.subjects.map { subject ->
+            if(subject.id == newNote.subject.id){
+                val updatedNotes = subject.notes.map { note ->
+                    if(note.id == newNote.id){
+                        note.copy(notes = newNote.notes)
+                    }else{
+                        note
+                    }
+                }
+                subject.copy(notes = updatedNotes)
+
+            }else{
+                subject
+            }
+        }
+
         val updatedSemester = currentSemester.copy(subjects = updatedSubjects)
         repository.saveNewSemester(updatedSemester)
         loadData()

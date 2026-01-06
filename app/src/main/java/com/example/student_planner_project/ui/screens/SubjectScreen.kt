@@ -87,14 +87,14 @@ fun SubjectScreen(mainViewModel: MainViewModel){
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
 
-                        // No existing subjects
+                    // No existing subjects
                     } else if (currentSemester.subjects.isEmpty()) {
                         Text(
                             text = "No existing subjects.",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
 
-                        // Has semester and subjects
+                    // Has semester and subjects
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
@@ -195,7 +195,7 @@ fun DisplaySubject(mainViewModel: MainViewModel, subject: Subject, pressed: (Sub
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = subject.name,
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(text = subject.professor, style = MaterialTheme.typography.bodyMedium)

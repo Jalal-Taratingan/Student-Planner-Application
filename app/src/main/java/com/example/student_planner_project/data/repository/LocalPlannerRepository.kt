@@ -3,6 +3,7 @@
 package com.example.student_planner_project.data.repository
 
 import com.example.student_planner_project.data.local.LocalStorageManager
+import com.example.student_planner_project.data.models.Notes
 import com.example.student_planner_project.data.models.Semester
 import com.example.student_planner_project.data.models.Subject
 import com.example.student_planner_project.data.models.Task
@@ -23,5 +24,9 @@ class LocalPlannerRepository( private val localStorage: LocalStorageManager) : P
 
     override fun addNewTask(task: Task){
         localStorage.addTask(task)
+    }
+
+    override fun addNewNotes(notes: Notes){
+        localStorage.addNotes(notes)
     }
 }

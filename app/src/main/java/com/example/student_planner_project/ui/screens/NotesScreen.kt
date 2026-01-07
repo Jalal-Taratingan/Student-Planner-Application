@@ -58,7 +58,7 @@ fun NotesScreen(mainViewModel: MainViewModel){
 
     Scaffold(
         floatingActionButton = {
-            if (pressedAdd.value == false && currentSemester?.subjects != null && note == null) {
+            if (pressedAdd.value == false && note == null && currentSemester?.subjects?.isNotEmpty() == true) {
                 FloatingActionButton(onClick = { pressedAdd.value = true }) {
                     Text(text = "+")
                 }
@@ -84,7 +84,13 @@ fun NotesScreen(mainViewModel: MainViewModel){
                         text = "Notes",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        thickness = 1.dp
                     )
 
                     // Has an existing semester

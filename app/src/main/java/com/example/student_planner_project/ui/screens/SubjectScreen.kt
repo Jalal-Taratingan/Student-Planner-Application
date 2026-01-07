@@ -81,7 +81,13 @@ fun SubjectScreen(mainViewModel: MainViewModel){
                         text = "Subjects",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        thickness = 1.dp
                     )
 
                     // No semester
@@ -93,10 +99,13 @@ fun SubjectScreen(mainViewModel: MainViewModel){
 
                     // No existing subjects
                     } else if (currentSemester.subjects.isEmpty()) {
-                        Text(
-                            text = "No existing subjects.",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "No existing subjects.")
+                        }
 
                     // Has semester and subjects
                     } else {

@@ -65,7 +65,7 @@ fun TaskScreen(mainViewModel : MainViewModel) {
 
     Scaffold(
         floatingActionButton = {
-            if (pressedAdd.value == false && currentSemester?.subjects != null && task == null) {
+            if (pressedAdd.value == false && task == null && currentSemester?.subjects?.isNotEmpty() == true) {
                 FloatingActionButton(onClick = { pressedAdd.value = true }) {
                     Text(text = "+")
                 }
@@ -90,7 +90,13 @@ fun TaskScreen(mainViewModel : MainViewModel) {
                         text = "Tasks",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        thickness = 1.dp
                     )
 
                     // Has an existing semester

@@ -187,8 +187,14 @@ fun AddSubject(mainViewModel: MainViewModel, pressedAdd: MutableState<Boolean>, 
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick =  {
-                mainViewModel.addSubject(subjectName.value, subjectProfessor.value, subjectSchedule.value)
-                pressedAdd.value = false}
+                if(subjectName.value != "" && subjectProfessor.value != "" && subjectSchedule.value != "") {
+                    mainViewModel.addSubject(
+                        subjectName.value,
+                        subjectProfessor.value,
+                        subjectSchedule.value
+                    )
+                    pressedAdd.value = false
+                }}
         ){
             Text(text = "Save")
         }

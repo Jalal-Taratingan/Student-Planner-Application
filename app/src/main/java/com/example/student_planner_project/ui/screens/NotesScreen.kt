@@ -234,7 +234,7 @@ fun AddNotes(mainViewModel: MainViewModel, pressedAdd: MutableState<Boolean>, pr
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 val subject = selectedSubject.value
-                if (subject != null) {
+                if (subject != null && notesName.value != "" && notes.value != "") {
                     mainViewModel.addNotes(subject, notesName.value, notes.value)
                     pressedAdd.value = false
                 }}

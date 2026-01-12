@@ -297,10 +297,11 @@ fun AddTask(mainViewModel: MainViewModel, pressedAdd: MutableState<Boolean>, pre
                 val subject = selectedSubject.value
                 val date = dueDateLong.value
 
-                if (subject != null && date != null) {
+                if (subject != null && date != null && taskName.value != "") {
                     mainViewModel.addTask(subject = subject, taskName.value, date, notes.value)
-                    pressedAdd.value = false}
+                    pressedAdd.value = false
                 }
+            }
         ){
             Text(text = "Save")
         }

@@ -18,9 +18,10 @@ data class Semester(
 data class Subject(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
+    val units: Int,
     val schedule: String,
     val professor: String,
-    val colorHex: String = "#F0F0F0",
+    val room: String,
     val tasks: List<Task> = emptyList(),
     val notes: List<Notes> = emptyList()
 )
@@ -41,5 +42,6 @@ data class Notes(
     val id: String = UUID.randomUUID().toString(),
     val subject: Subject,
     val title: String,
-    val notes: String
+    val notes: String,
+    val dateCreated: Long
 )

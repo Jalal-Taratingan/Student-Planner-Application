@@ -68,7 +68,8 @@ class LocalStorageManager(context: Context) {
         saveSemester(updatedSemester)
     }
 
-    fun clearData() {
-        sharedPreferences.edit().clear().apply()
+    // Deletes the whole semester.
+    fun deleteSemester() {
+        sharedPreferences.edit().remove("saved_semester").apply()
     }
 }

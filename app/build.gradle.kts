@@ -6,10 +6,23 @@ plugins {
 }
 
 android {
+//    namespace = "com.example.student_planner_project"
+//    compileSdk {
+//        version = release(36)
+//    }
+//
+//    defaultConfig {
+//        applicationId = "com.example.student_planner_project"
+//        minSdk = 24
+//        targetSdk = 36
+//        versionCode = 1
+//        versionName = "1.0"
+//
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//    }
     namespace = "com.example.student_planner_project"
-    compileSdk {
-        version = release(36)
-    }
+    // Use the standard assignment syntax
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.student_planner_project"
@@ -17,7 +30,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -30,16 +42,28 @@ android {
             )
         }
     }
+
+    // UPDATE THESE TO VERSION_17
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_11
+//        targetCompatibility = JavaVersion.VERSION_11
+//    }
+//    kotlinOptions {
+//        jvmTarget = "11"
+//    }
+//    buildFeatures {
+//        compose = true
+//    }
 }
 
 dependencies {
@@ -60,6 +84,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation(libs.play.services.mlkit.subject.segmentation)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.compose.foundation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -68,4 +94,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation("androidx.profileinstaller:profileinstaller:1.4.0") { exclude(group = "com.google.android.gms") }
 }

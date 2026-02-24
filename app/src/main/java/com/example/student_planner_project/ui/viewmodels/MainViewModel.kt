@@ -13,6 +13,7 @@ import com.example.student_planner_project.data.models.Task
 import com.example.student_planner_project.data.repository.LocalPlannerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 // Constructor
@@ -20,8 +21,8 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
     private val localStorage = LocalStorageManager(application)
     private val repository = LocalPlannerRepository(localStorage)
 
-    private val _updatedSemester = MutableStateFlow<Semester?>(null)
-    val semester : StateFlow<Semester?> = _updatedSemester
+    private val _semester = MutableStateFlow<Semester?>(null)
+    val semester = _semester.asStateFlow()
 
     val isFirstTime = MutableStateFlow(true)
 
@@ -31,9 +32,9 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
 
     private fun loadData() {
         viewModelScope.launch {
-            _updatedSemester.value = repository.getCurrentSemester()
+            _semester.value = repository.getCurrentSemester()
 
-            if (_updatedSemester.value  != null){
+            if (_semester.value  != null){
                 isFirstTime.value = false
             }
         }
@@ -47,8 +48,8 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
     }
 
     // Add the newly created subject
-    fun addSubject(subjectName: String, subjectProfessor: String, subjectSchedule: String){
-        val newSubject = Subject(name = subjectName, professor = subjectProfessor, schedule = subjectSchedule)
+    fun addSubject(subjectName: String, subjectUnits: Int, subjectProfessor: String, subjectSchedule: String, subjectRoom: String){
+        val newSubject = Subject(name = subjectName, units = subjectUnits, professor = subjectProfessor, schedule = subjectSchedule, room = subjectRoom)
         repository.addNewSubject(newSubject)
         loadData()
     }
@@ -87,7 +88,7 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
 
     // Add a note
     fun addNotes(subject: Subject, notesName: String, notes: String){
-        val newNotes = Notes(subject = subject, title = notesName, notes = notes)
+        val newNotes = Notes(subject = subject, title = notesName, notes = notes, dateCreated = System.currentTimeMillis())
         repository.addNewNotes(newNotes)
         loadData()
     }
@@ -132,6 +133,11 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
         loadData()
     }
 
+    // Deletes the whole semester.
+    fun deleteSemester(){
+        repository.deleteSemester()
+        _semester.value = null
+    }
     fun finishSetup(){
         isFirstTime.value = false
     }

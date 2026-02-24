@@ -25,7 +25,7 @@ fun Routes(navController: NavHostController, mainViewModel: MainViewModel, modif
         }
 
         composable(Screen.Home.route) {
-            HomeScreen(mainViewModel)
+            HomeScreen(mainViewModel, navController)
         }
 
         composable(Screen.Tasks.route) {

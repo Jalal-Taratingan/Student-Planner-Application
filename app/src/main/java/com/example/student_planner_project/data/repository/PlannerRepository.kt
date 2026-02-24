@@ -13,4 +13,5 @@ interface PlannerRepository {
     fun getCurrentSemester(): Semester?
     fun addNewTask(task: Task)
     fun addNewNotes(notes: Notes)
+    fun deleteSemester()
 }

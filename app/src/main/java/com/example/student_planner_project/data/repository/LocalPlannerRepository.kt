@@ -29,4 +29,8 @@ class LocalPlannerRepository( private val localStorage: LocalStorageManager) : P
     override fun addNewNotes(notes: Notes){
         localStorage.addNotes(notes)
     }
+
+    override fun deleteSemester(){
+        localStorage.deleteSemester()
+    }
 }

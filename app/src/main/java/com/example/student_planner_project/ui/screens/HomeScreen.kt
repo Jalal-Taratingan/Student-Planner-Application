@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MoreVert
@@ -52,11 +54,14 @@ import androidx.compose.runtime.remember
 import java.util.concurrent.TimeUnit
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.example.student_planner_project.data.models.Notes
 import com.example.student_planner_project.data.models.Subject
@@ -642,12 +647,19 @@ fun displayNextTask(nextTask: Task, pressed: (Task) -> Unit){
 @Composable
 fun displaySettings(mainViewModel : MainViewModel ,pressedBack: () -> Unit){
     val pressedDelete = remember{mutableStateOf(false)}
+    val semester = mainViewModel.semester.collectAsState()
+    val currentSemester = semester.value
 
     if(pressedDelete.value == true){
-        confirmDelete(mainViewModel){
-            pressedDelete.value = false
+        if(currentSemester != null) {
+            ConfirmDeleteDialog(mainViewModel) {
+                pressedDelete.value = false
+            }
+        }else{
+            NoSemesterFoundDialog {
+                pressedDelete.value = false
+            }
         }
-
     }else {
         Box(
             modifier = Modifier.fillMaxWidth().height(200.dp).background(
@@ -781,50 +793,130 @@ fun displaySettings(mainViewModel : MainViewModel ,pressedBack: () -> Unit){
     }
 }
 
-// Shows a confirmation box for deleting all data.
+// Shows a confirmation dialog box for deleting all data.
 @Composable
-fun confirmDelete(mainViewModel : MainViewModel, pressedBack : () -> Unit){
-    Card(modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(containerColor = Color.White)){
-        Column(modifier = Modifier.padding(36.dp)){
-            Card(
-                colors = CardDefaults.cardColors(containerColor = lightRed),
-                elevation = CardDefaults.cardElevation(2.dp),
-                shape = RoundedCornerShape(15.dp)
-            ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Icon(
-                        imageVector = Icons.Default.DeleteForever,
-                        contentDescription = "Delete Semester",
-                        tint = darkRed,
-                        modifier = Modifier.size(25.dp)
-                    )
+fun ConfirmDeleteDialog(mainViewModel : MainViewModel, pressedBack : () -> Unit){
+    Dialog(onDismissRequest = { pressedBack() }) {
+        Card(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(2.dp),
+            shape = RoundedCornerShape(15.dp)
+        ) {
+            Column(modifier = Modifier.padding(36.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = lightRed),
+                    elevation = CardDefaults.cardElevation(2.dp),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.DeleteForever,
+                            contentDescription = "Delete Icon",
+                            tint = darkRed,
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                Text(
+                    text = "Delete All Data?",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Text(
+                    text = "This action cannot be undone. All your subjects, tasks, and notes will be permanently removed.",
+                    color = Color.Gray,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = darkRed),
+                    shape = RoundedCornerShape(15.dp),
+                    onClick = {
+                        mainViewModel.deleteSemester()
+                        pressedBack()
+                    }) {
+                    Text(text = "Delete", color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    shape = RoundedCornerShape(15.dp),
+                    onClick = { pressedBack() }) {
+                    Text(text = "Cancel")
                 }
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(15.dp))
+// Shows a no semester found dialog box.
+@Composable
+fun NoSemesterFoundDialog(pressedBack : () -> Unit){
+    Dialog(onDismissRequest = {pressedBack()}){
+        Card(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(2.dp),
+            shape = RoundedCornerShape(15.dp)
+        ) {
+            Column(modifier = Modifier.padding(36.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = lightBlue),
+                    elevation = CardDefaults.cardElevation(2.dp),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "Info Icon",
+                            tint = darkBlue,
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
+                }
 
-            Text(text = "Delete All Data?", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(18.dp))
 
-            Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text = "No Semester Found",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
 
-            Text(text = "This action cannot be undone. All your subjects, tasks, and notes will be permanently removed.", color = Color.Gray, fontSize = 15.sp, fontWeight = FontWeight.Normal)
+                Spacer(modifier = Modifier.height(5.dp))
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "There is no existing semester to delete.",
+                    color = Color.Gray,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center
+                )
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = darkRed),
-                shape = RoundedCornerShape(15.dp),
-                onClick = {
-                    mainViewModel.deleteSemester()
-                    pressedBack()}){
-                Text(text = "Delete", color = Color.White)
-            }
+                Spacer(modifier = Modifier.height(15.dp))
 
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Button(modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), shape = RoundedCornerShape(15.dp), onClick = {pressedBack()}){
-                Text(text = "Cancel")
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = darkBlue),
+                    shape = RoundedCornerShape(15.dp),
+                    onClick = { pressedBack() }) {
+                    Text(text = "Okay", color = Color.White)
+                }
             }
         }
     }

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Check
@@ -70,7 +71,7 @@ import com.example.student_planner_project.ui.theme.lightBlue
 import com.example.student_planner_project.ui.viewmodels.MainViewModel
 
 @Composable
-fun NotesScreen(mainViewModel: MainViewModel){
+fun NotesScreen(mainViewModel: MainViewModel, NavigateToSubject:() -> Unit){
     val semester = mainViewModel.semester.collectAsState()
     val currentSemester = semester.value
     val pressedAdd = remember { mutableStateOf(false) }
@@ -78,19 +79,23 @@ fun NotesScreen(mainViewModel: MainViewModel){
     val note = selectedNote.value
 
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
-        // Add a note
-        if (pressedAdd.value == true) {
-            AddNotes(mainViewModel, pressedAdd) {
-                pressedAdd.value = false
-            }
+        val hasNotes = currentSemester?.subjects?.any { subject ->
+            subject.notes.isNotEmpty()
+        }
 
         // Displays the details of the selected notes.
-        } else if (note != null) {
+        if (note != null) {
             DisplayNotesDetails(mainViewModel, note) {
                 selectedNote.value = null
             }
 
-        } else {
+        // Add a note
+        }else if (pressedAdd.value == true) {
+            AddNotes(mainViewModel, pressedAdd) {
+                pressedAdd.value = false
+            }
+
+        }else {
             Box(modifier = Modifier.fillMaxWidth().height(200.dp).background(color = darkBlue, shape = RoundedCornerShape(bottomStart = 100.dp, bottomEnd = 100.dp)))
 
             Column(modifier = Modifier.fillMaxSize().padding(start = 36.dp, end = 36.dp, top = 36.dp)) {
@@ -110,12 +115,8 @@ fun NotesScreen(mainViewModel: MainViewModel){
 
                 // Has an existing semester
                 if (currentSemester != null) {
-
                     // Has an existing subjects
                     if (currentSemester.subjects.isNotEmpty()) {
-                        val hasNotes = currentSemester.subjects.any { subject ->
-                            subject.notes.isNotEmpty()
-                        }
                         // Has an existing notes
                         if (hasNotes == true) {
                             val allNotes = currentSemester.subjects.flatMap { subject -> subject.notes }.sortedByDescending { it.dateCreated }
@@ -142,8 +143,8 @@ fun NotesScreen(mainViewModel: MainViewModel){
                         }
                         // No existing subjects
                     } else {
-                        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Create a subject to add notes.")
+                        EmptyStateScreen("No Notes Yet", "Add your first subject to start taking organized study notes.", "Go to Subjects", Icons.Default.ArrowForward) {
+                            NavigateToSubject()
                         }
                     }
                     // No existing semester
@@ -155,7 +156,14 @@ fun NotesScreen(mainViewModel: MainViewModel){
             }
         }
 
-        if (pressedAdd.value == false && note == null && currentSemester?.subjects?.isNotEmpty() == true) {
+        // For state where there is no pending existing task.
+        if (pressedAdd.value == false && currentSemester != null && currentSemester.subjects.isNotEmpty() == true && hasNotes == false) {
+            EmptyStateScreen("No Notes Yet", "Start your academic journey by adding your first notes.", "Add New Notes", Icons.Default.Add) {
+                pressedAdd.value = true
+            }
+
+        // For state where there are existing notes.
+        }else if (pressedAdd.value == false && currentSemester != null && note == null && hasNotes == true) {
             FloatingActionButton(containerColor = darkBlue, shape = RoundedCornerShape(30.dp), onClick = { pressedAdd.value = true }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Icon", tint = Color.White)
             }

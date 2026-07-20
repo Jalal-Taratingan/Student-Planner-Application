@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import java.util.Calendar
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +38,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarToday
@@ -72,14 +72,12 @@ import androidx.compose.ui.unit.sp
 import com.example.student_planner_project.data.models.Task
 import com.example.student_planner_project.ui.theme.darkBlue
 import com.example.student_planner_project.ui.theme.darkBlue2
-import com.example.student_planner_project.ui.theme.darkGreen
-import com.example.student_planner_project.ui.theme.darkOrange
 import com.example.student_planner_project.ui.theme.darkOrange2
 import com.example.student_planner_project.ui.theme.lightBlue
 import com.example.student_planner_project.ui.theme.lightOrange
 
 @Composable
-fun TaskScreen(mainViewModel : MainViewModel) {
+fun TaskScreen(mainViewModel : MainViewModel, NavigateToSubject:() -> Unit) {
     val semester = mainViewModel.semester.collectAsState()
     val currentSemester = semester.value
     val pressedAdd = remember { mutableStateOf(false) }
@@ -87,17 +85,22 @@ fun TaskScreen(mainViewModel : MainViewModel) {
     val task = selectedTask.value
 
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+        val hasTasks = currentSemester?.subjects?.any { subject ->
+            subject.tasks.isNotEmpty()
+        }
+
+        // Displays the details of the selected task.
+        if (task != null) {
+            DisplayTaskDetails(mainViewModel, task) {
+                selectedTask.value = null
+            }
+
         // Add a task
-        if (pressedAdd.value == true) {
+        }else if (pressedAdd.value == true) {
             AddTask(mainViewModel, pressedAdd) {
                 pressedAdd.value = false
             }
 
-            // Displays the details of the selected task.
-        } else if (task != null) {
-            DisplayTaskDetails(mainViewModel, task) {
-                selectedTask.value = null
-            }
         } else {
             Box(modifier = Modifier.fillMaxWidth().height(200.dp).background(color = darkBlue, shape = RoundedCornerShape(bottomStart = 100.dp, bottomEnd = 100.dp)))
 
@@ -121,9 +124,6 @@ fun TaskScreen(mainViewModel : MainViewModel) {
 
                     // Has an existing subjects
                     if (currentSemester.subjects.isNotEmpty()) {
-                        val hasTasks = currentSemester.subjects.any { subject ->
-                            subject.tasks.isNotEmpty()
-                        }
 
                         // Has an existing tasks
                         if (hasTasks == true) {
@@ -146,8 +146,8 @@ fun TaskScreen(mainViewModel : MainViewModel) {
                         }
                         // No existing subjects
                     } else {
-                        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Create a subject to add tasks.")
+                        EmptyStateScreen("No Tasks Yet", "Add your first subject to start organizing your academic tasks and stay ahead of your schedule.", "Go to Subjects", Icons.Default.ArrowForward) {
+                            NavigateToSubject()
                         }
                     }
                     // No existing semester
@@ -159,7 +159,14 @@ fun TaskScreen(mainViewModel : MainViewModel) {
             }
         }
 
-        if (pressedAdd.value == false && task == null && currentSemester?.subjects?.isNotEmpty() == true) {
+        // For state where there is no pending existing task.
+        if (pressedAdd.value == false && currentSemester != null && currentSemester.subjects.isNotEmpty() == true && hasTasks == false){
+            EmptyStateScreen("No Tasks Yet", "Start your academic journey by adding your first task.", "Add New Task", Icons.Default.Add) {
+                pressedAdd.value = true
+            }
+
+        // For state where there are existing tasks.
+        }else if (pressedAdd.value == false && currentSemester != null && task == null && hasTasks == true) {
             FloatingActionButton(containerColor = darkBlue, shape = RoundedCornerShape(30.dp), onClick = { pressedAdd.value = true }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Icon", tint = Color.White)
             }

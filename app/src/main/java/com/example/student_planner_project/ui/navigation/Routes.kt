@@ -29,7 +29,11 @@ fun Routes(navController: NavHostController, mainViewModel: MainViewModel, modif
         }
 
         composable(Screen.Tasks.route) {
-            TaskScreen(mainViewModel)
+            TaskScreen(mainViewModel, NavigateToSubject = {
+                navController.navigate(Screen.Subjects.route){
+                    launchSingleTop = true
+                }
+            })
         }
 
         composable(Screen.Subjects.route){
@@ -37,7 +41,11 @@ fun Routes(navController: NavHostController, mainViewModel: MainViewModel, modif
         }
 
         composable(Screen.Notes.route) {
-            NotesScreen(mainViewModel)
+            NotesScreen(mainViewModel, NavigateToSubject = {
+                navController.navigate(Screen.Subjects.route){
+                    launchSingleTop = true
+                }
+            })
         }
     }
 }

@@ -24,13 +24,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FormatListNumbered
@@ -40,7 +38,6 @@ import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Room
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.StickyNote2
-import androidx.compose.material.icons.filled.Subject
 import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -48,7 +45,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -138,9 +134,13 @@ fun SubjectScreen(mainViewModel: MainViewModel){
 
                     // Has an existing subjects
                     if (currentSemester.subjects.isNotEmpty()) {
-                        val subjects = currentSemester.subjects.sortedBy{it.name}
+                        val subjects = currentSemester.subjects.sortedBy { it.name }
 
-                        LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 20.dp)) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(14.dp),
+                            contentPadding = PaddingValues(bottom = 20.dp)
+                        ) {
                             items(subjects) { subject ->
                                 DisplaySubject(
                                     mainViewModel,
@@ -150,15 +150,11 @@ fun SubjectScreen(mainViewModel: MainViewModel){
                                     })
                             }
                         }
-
                     // No existing subjects
                     } else {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "No existing subjects.")
+                        EmptyStateScreen("No Subjects Yet", "Start your academic journey by adding your first subject.", "Add New Subject", Icons.Default.Add)
+                        {
+                            pressedAdd.value = true
                         }
                     }
 
@@ -172,7 +168,8 @@ fun SubjectScreen(mainViewModel: MainViewModel){
             }
         }
 
-        if(pressedAdd.value == false && currentSemester != null && subject == null) {
+        // For state where there are existing subjects.
+        if(pressedAdd.value == false && currentSemester != null && subject == null && currentSemester.subjects.isNotEmpty()) {
             FloatingActionButton(containerColor = darkBlue, shape = RoundedCornerShape(30.dp), onClick = { pressedAdd.value = true }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)){
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Icon", tint = Color.White)
             }
